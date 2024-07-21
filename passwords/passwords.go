@@ -36,7 +36,7 @@ func SavePasswords() error {
 	return json.NewEncoder(file).Encode(PswList)
 }
 func PrintDescriptions() {
-	fmt.Println("Saved passwords:")
+	fmt.Println("Saved passwords: ")
 	for _, psw := range PswList {
 		fmt.Printf("Description: %v\n", psw.Description)
 	}
@@ -54,7 +54,6 @@ func NewPsw() {
 		fmt.Println("New password added successfully")
 	}
 }
-
 func GetPassword() {
 	var description string
 	fmt.Print("Insert description to retrieve the password: ")
