@@ -1,11 +1,9 @@
 package passwords
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 )
 
 type PswStorage struct {
@@ -27,37 +25,28 @@ func LoadPasswords() error {
 		return err
 	}
 	defer file.Close()
-
 	return json.NewDecoder(file).Decode(&PswList)
 }
-
 func SavePasswords() error {
 	file, err := os.Create(fileName)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
-
 	return json.NewEncoder(file).Encode(PswList)
 }
-
 func PrintDescriptions() {
 	fmt.Println("Saved passwords:")
 	for _, psw := range PswList {
 		fmt.Printf("Description: %v\n", psw.Description)
 	}
 }
-
 func NewPsw() {
-	reader := bufio.NewReader(os.Stdin)
+	var newDescription, newPassword string
 	fmt.Print("Insert description of new password: ")
-	newDescription, _ := reader.ReadString('\n')
-	newDescription = strings.TrimSpace(newDescription)
-
+	fmt.Scan(&newDescription)
 	fmt.Print("Insert new password: ")
-	newPassword, _ := reader.ReadString('\n')
-	newPassword = strings.TrimSpace(newPassword)
-
+	fmt.Scan(&newPassword)
 	PswList = append(PswList, PswStorage{Description: newDescription, Password: newPassword})
 	if err := SavePasswords(); err != nil {
 		fmt.Println("Error saving passwords:", err)
@@ -67,11 +56,9 @@ func NewPsw() {
 }
 
 func GetPassword() {
-	reader := bufio.NewReader(os.Stdin)
+	var description string
 	fmt.Print("Insert description to retrieve the password: ")
-	description, _ := reader.ReadString('\n')
-	description = strings.TrimSpace(description)
-
+	fmt.Scan(&description)
 	for _, psw := range PswList {
 		if psw.Description == description {
 			fmt.Printf("Password for %v: %v\n", description, psw.Password)
