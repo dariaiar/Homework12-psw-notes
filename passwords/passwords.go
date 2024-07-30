@@ -35,34 +35,23 @@ func SavePasswords() error {
 	defer file.Close()
 	return json.NewEncoder(file).Encode(PswList)
 }
-func PrintDescriptions() {
-	fmt.Println("Saved passwords: ")
+func ListDescriptions() []string {
+	descriptions := []string{}
 	for _, psw := range PswList {
-		fmt.Printf("Description: %v\n", psw.Description)
+		descriptions = append(descriptions, psw.Description)
 	}
+	return descriptions
 }
-func NewPsw() {
-	var newDescription, newPassword string
-	fmt.Print("Insert description of new password: ")
-	fmt.Scan(&newDescription)
-	fmt.Print("Insert new password: ")
-	fmt.Scan(&newPassword)
-	PswList = append(PswList, PswStorage{Description: newDescription, Password: newPassword})
-	if err := SavePasswords(); err != nil {
-		fmt.Println("Error saving passwords:", err)
-	} else {
-		fmt.Println("New password added successfully")
-	}
+func AddPassword(description, password string) error {
+	PswList = append(PswList, PswStorage{Description: description, Password: password})
+	return SavePasswords()
 }
-func GetPassword() {
-	var description string
-	fmt.Print("Insert description to retrieve the password: ")
-	fmt.Scan(&description)
+
+func GetPasswordByDescription(description string) (string, error) {
 	for _, psw := range PswList {
 		if psw.Description == description {
-			fmt.Printf("Password for %v: %v\n", description, psw.Password)
-			return
+			return psw.Password, nil
 		}
 	}
-	fmt.Println("No password found for the given description")
+	return "", fmt.Errorf("no password found for the given description")
 }

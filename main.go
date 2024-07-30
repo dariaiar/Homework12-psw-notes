@@ -3,36 +3,53 @@ package main
 import (
 	"Homework12/passwords"
 	"fmt"
+	"os"
 )
 
 func main() {
+	fmt.Println("Program started")
 	if err := passwords.LoadPasswords(); err != nil {
 		fmt.Println("Error loading passwords:", err)
 		return
 	}
 
-	for {
-		fmt.Println("\nPassword Manager")
-		fmt.Println("1. List all password descriptions")
-		fmt.Println("2. Add a new password")
-		fmt.Println("3. Get a password by description")
-		fmt.Println("4. Exit")
+	if len(os.Args) < 2 {
+		fmt.Println("expected 'list', 'put' or 'get' commands")
+	}
 
-		var choice int
-		fmt.Scan(&choice)
-
-		switch choice {
-		case 1:
-			passwords.PrintDescriptions()
-		case 2:
-			passwords.NewPsw()
-		case 3:
-			passwords.GetPassword()
-		case 4:
-			fmt.Println("Exiting...")
-			return
-		default:
-			fmt.Println("Invalid choice, please try again.")
+	switch os.Args[1] {
+	case "list":
+		descriptions := passwords.ListDescriptions()
+		fmt.Println("Saved passwords:")
+		for _, desc := range descriptions {
+			fmt.Println(desc)
 		}
+	case "put":
+		if len(os.Args) < 4 {
+			fmt.Println("Usage: put <description> <password>")
+			return
+		}
+		description := os.Args[2]
+		password := os.Args[3]
+		err := passwords.AddPassword(description, password)
+		if err != nil {
+			fmt.Println("Error adding password:", err)
+		} else {
+			fmt.Println("New password added successfully")
+		}
+	case "get":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: get <description>")
+			return
+		}
+		description := os.Args[2]
+		password, err := passwords.GetPasswordByDescription(description)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Printf("Password for %v: %v\n", description, password)
+		}
+	default:
+		fmt.Println("Expected 'list', 'put' or 'get'")
 	}
 }
