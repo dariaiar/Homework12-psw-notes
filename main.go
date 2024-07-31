@@ -30,7 +30,27 @@ func main() {
 			return
 		}
 		description := os.Args[2]
+		if description == "" {
+			fmt.Println("Description cannot be empty")
+			return
+		}
 		password := os.Args[3]
+		if len(password) < 4 {
+			fmt.Println("Password must be at least 4 characters long")
+			return
+		}
+		if !passwords.ContainsNumber(password) {
+			fmt.Println("Password should contain at least one number")
+			return
+		}
+		if !passwords.ContainsUpper(password) {
+			fmt.Println("Password should contain at least one uppercase letter")
+			return
+		}
+		if !passwords.ContainsLower(password) {
+			fmt.Println("Password should contain at least one lowerrcase letter")
+			return
+		}
 		err := passwords.AddPassword(description, password)
 		if err != nil {
 			fmt.Println("Error adding password:", err)

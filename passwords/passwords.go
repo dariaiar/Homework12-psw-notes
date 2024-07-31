@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"unicode"
 )
 
 type PswStorage struct {
@@ -54,4 +55,31 @@ func GetPasswordByDescription(description string) (string, error) {
 		}
 	}
 	return "", fmt.Errorf("no password found for the given description")
+}
+
+func ContainsNumber(password string) bool {
+	for _, c := range password {
+		if unicode.IsNumber(c) {
+			return true
+		}
+	}
+	return false
+}
+
+func ContainsUpper(password string) bool {
+	for _, c := range password {
+		if unicode.IsUpper(c) {
+			return true
+		}
+	}
+	return false
+}
+
+func ContainsLower(password string) bool {
+	for _, c := range password {
+		if unicode.IsLower(c) {
+			return true
+		}
+	}
+	return false
 }
